@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>IP Geo locator</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+	function findCountry(event)
+	{
+		var ip = document.getElementById("ip");
+		var res = ValidateIPaddress(ip.value);
+		console.log("after call"+res);
+		if(res == true)
+		{
+				var xhttp = new XMLHttpRequest();// this is an Ajax request
+				xhttp.onreadystatechange=function() 
+				{
+					if (this.readyState == 4 && this.status == 200) 
+					{
+						var data = this.responseText.split("#@");
+						console.log(data);
+						if(data.length>2)
+						{
+							document.getElementById("res").innerHTML = "<strong>City : </strong>"+data[1]+"<br/> <strong> Province/State :</strong>"+data[2]+"<br/><strong>Country : </strong>"+data[0]+"<br/> <strong> Organizationation :</strong>"+data[3];
+						}
+						else
+						{
+							document.getElementById("res").innerHTML = data[0];						
+						}
+					}
+				};
+				xhttp.open("GET", "php/rangeCheck.php?ip=" + ip.value, true);
+				xhttp.send();
+		}
+	}
+	
+	function ValidateIPaddress(ipaddress) 
+	{  
+		console.log(typeof(ipaddress));
+		var patt = new RegExp(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);
+		var res = patt.test(ipaddress);
+		console.log(res);
+		if(res == true){return true}
+		alert("You have entered an invalid IP address!"); 
+		return (false)  
+} 
+  </script>
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="panel panel-default">
+  <div class="panel-heading"><h2>IP Adress Geo Locator</h2></div>
+  <div class="panel-body"><h5>Enter the IP Adress below to search for country</h5></div>
+</div>
+   
+      <label for="usr">IP Address :  <input type="text" class="form-control" id="ip"></label>
+    
+    <div class="form-group">
+      <input type="button"  value="submit" onclick="findCountry(event)">
+    </div>
+  
+ <div class="jumbotron">
+<p id="res"></p>
+</div>
+</div>
+
+</body>
+</html>
